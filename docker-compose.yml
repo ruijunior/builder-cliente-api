@@ -1,0 +1,35 @@
+version: "3.9"
+
+networks:
+  builder-network:
+    driver: bridge
+
+services:
+  builder-mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    ports:
+      - "3306:3306"
+    networks:
+      - builder-network
+
+  builder-api:
+    image: builder-api
+    command: ["/wait-for-it.sh", "builder-mysql:3306", "-t", "30", "--", "java", "-jar", "builder-api.jar"]
+    environment:
+      DB_HOST: builder-mysql
+    networks:
+      - builder-network
+    depends_on:
+      - builder-mysql
+
+  builder-proxy:
+    build: ./nginx
+    image: builder-proxy
+    ports:
+     - "80:80"
+    networks:
+     - builder-network
+    depends_on:
+     - builder-api
