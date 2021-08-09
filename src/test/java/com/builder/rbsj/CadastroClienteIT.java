@@ -25,6 +25,8 @@ import java.time.LocalDate;
 @TestPropertySource("/application-test.properties")
 class CadastroClienteIT {
 
+	private static final int CLIENTE_ID_INEXISTENTE = 1000;
+	
 	@LocalServerPort
 	private int port;
 
@@ -115,4 +117,14 @@ class CadastroClienteIT {
 			.body("nome", equalTo(cliente2.getNome()));
 	}
 
+	@Test
+	public void deveRetornarStatus404_QuandoConsultarClienteInexistente() {
+		given()
+			.pathParam("id", CLIENTE_ID_INEXISTENTE)
+			.accept(ContentType.JSON)
+		.when()
+			.get("/{id}")
+		.then()
+			.statusCode(HttpStatus.NOT_FOUND.value());
+	}
 }
