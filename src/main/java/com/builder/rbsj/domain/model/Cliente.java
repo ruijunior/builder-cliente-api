@@ -10,8 +10,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 
+import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Setter;
 
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
@@ -33,7 +35,8 @@ public class Cliente {
 	private String celular;
 	
 	private LocalDate nascimento;
-	
+
+	@Setter(value = AccessLevel.NONE)
 	@Transient
 	private int idade;
 	
